@@ -297,13 +297,20 @@ def main() -> None:
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 # Pour Vercel, nous avons besoin d'une fonction handler de niveau supérieur
-def handler(event, context):
+def handler(request):
     """Handler pour Vercel serverless functions"""
-    return {
-        'statusCode': 200,
-        'body': json.dumps({'status': 'bot_ready', 'message': 'Bot Telegram de codage - Utilisez Railway ou Render pour un déploiement complet'}),
-        'headers': {'Content-Type': 'application/json'}
-    }
+    try:
+        return {
+            'statusCode': 200,
+            'body': json.dumps({'status': 'bot_ready', 'message': 'Bot Telegram de codage - Utilisez Railway ou Render pour un déploiement complet'}),
+            'headers': {'Content-Type': 'application/json'}
+        }
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': json.dumps({'error': str(e)}),
+            'headers': {'Content-Type': 'application/json'}
+        }
 
 # Alias pour Vercel (il cherche "app", "application" ou "handler")
 app = handler
