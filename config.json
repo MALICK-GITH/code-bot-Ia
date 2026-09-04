@@ -1,0 +1,11 @@
+{
+  "models": [
+    {
+      "title": "Laguna S 2.1 - Bynara",
+      "provider": "openai",
+      "model": "laguna-s-2.1",
+      "apiKey": "sk-nry-y_MiJSetORSnssXAB9EQ3_Myg3P0miHDKaedi6Gn6ww",
+      "apiBase": "https://router.bynara.id/v1"
+    }
+  ]
+}
