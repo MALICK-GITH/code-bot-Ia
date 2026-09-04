@@ -69,7 +69,7 @@ Un bot Telegram intelligent alimenté par l'IA pour vous aider avec vos tâches 
 ### Démarrer le bot
 
 ```bash
-python bot.py
+python app.py
 ```
 
 ### Commandes disponibles
@@ -189,11 +189,14 @@ Le prompt système qui définit le comportement du bot se trouve dans la fonctio
 
 ```
 bot tG/
-├── bot.py              # Code principal du bot
+├── app.py              # Code principal du bot
 ├── config.json         # Configuration de l'API OpenAI
 ├── requirements.txt    # Dépendances Python
 ├── .env.example       # Exemple de configuration environnement
 ├── .gitignore         # Fichiers à ignorer par git
+├── vercel.json        # Configuration Vercel
+├── railway.json       # Configuration Railway
+├── render.yaml        # Configuration Render
 └── README.md          # Documentation
 ```
 
@@ -216,7 +219,54 @@ Vérifiez que:
 - Assurez-vous que le bot n'est pas bloqué par Telegram
 - Vérifiez les logs pour d'éventuelles erreurs
 
-## 🔒 Sécurité
+## � Déploiement
+
+### ⚠️ Note importante sur le déploiement
+
+Ce bot Telegram utilise le **polling** (processus continu 24/7), ce qui le rend incompatible avec les plateformes serverless comme Vercel. Voici les options recommandées :
+
+### Options de déploiement recommandées
+
+#### 1. Railway (Recommandé)
+- **Pourquoi** : Supporte les processus continus, gratuit pour les petits projets
+- **Configuration** : `railway.json` inclus
+- **Déploiement** :
+  ```bash
+  railway login
+  railway init
+  railway up
+  ```
+
+#### 2. Render (Recommandé)
+- **Pourquoi** : Supporte les web services, gratuit pour les petits projets
+- **Configuration** : `render.yaml` inclus
+- **Déploiement** : Connectez votre repo GitHub sur render.com
+
+#### 3. Heroku
+- **Pourquoi** : Plateforme éprouvée pour les bots
+- **Configuration** : Créez un `Procfile` avec `worker: python app.py`
+
+#### 4. VPS (Serveur privé)
+- **Pourquoi** : Contrôle total, coût fixe
+- **Exemples** : DigitalOcean, Linode, AWS EC2
+- **Configuration** : Utilisez systemd ou supervisor pour gérer le processus
+
+### Pourquoi pas Vercel ?
+
+Vercel est conçu pour des fonctions serverless (exécution à la demande), mais ce bot Telegram nécessite :
+- Un processus continu 24/7
+- Une mémoire persistante pour les conversations
+- Des webhooks actifs
+
+Le fichier `vercel.json` est inclus pour des configurations futures, mais le bot ne fonctionnera pas correctement sur Vercel sans une refonte complète de l'architecture.
+
+### Variables d'environnement pour le déploiement
+
+Assurez-vous de configurer ces variables sur votre plateforme de déploiement :
+- `TELEGRAM_TOKEN` - Votre token Telegram Bot
+- `PYTHON_VERSION` - Version Python (3.8+)
+
+## �🔒 Sécurité
 
 - **Ne partagez jamais** votre token Telegram ou votre clé API
 - **Ne committez jamais** les fichiers contenant des secrets dans un repository public
