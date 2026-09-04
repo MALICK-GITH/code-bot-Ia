@@ -6,8 +6,6 @@ from dotenv import load_dotenv
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, CallbackContext, filters, ContextTypes
 from openai import OpenAI
-from http.server import BaseHTTPRequestHandler, HTTPServer
-import threading
 
 # Charger les variables d'environnement depuis le fichier .env
 load_dotenv()
@@ -298,33 +296,18 @@ def main() -> None:
     logger.info("Bot démarré avec succès!")
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
-# Handler Vercel
-class VercelHandler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        content_length = int(self.headers['Content-Length'])
-        post_data = self.rfile.read(content_length)
-        
-        # Simuler un update Telegram (c'est une version simplifiée)
-        # Pour une vraie implémentation Vercel, il faudrait utiliser des webhooks
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers()
-        self.wfile.write(b'{"status": "ok"}')
-    
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json')
-        self.end_headers()
-        self.wfile.write(b'{"status": "bot_running"}')
-
-# Pour Vercel, nous avons besoin d'une fonction handler
+# Pour Vercel, nous avons besoin d'une fonction handler de niveau supérieur
 def handler(event, context):
     """Handler pour Vercel serverless functions"""
     return {
         'statusCode': 200,
-        'body': json.dumps({'status': 'bot_ready'}),
+        'body': json.dumps({'status': 'bot_ready', 'message': 'Bot Telegram de codage - Utilisez Railway ou Render pour un déploiement complet'}),
         'headers': {'Content-Type': 'application/json'}
     }
+
+# Alias pour Vercel (il cherche "app", "application" ou "handler")
+app = handler
+application = handler
 
 if __name__ == '__main__':
     # Lancer en mode polling pour le développement local
